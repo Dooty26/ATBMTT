@@ -257,25 +257,6 @@ DB_PASSWORD=your_mysql_password
 DB_NAME=quanly_matkhau
 ```
 
-## Giấy Phép
-
-MIT License - Xem file LICENSE để biết thêm chi tiết.
-
-## Đóng Góp
-
-Chúng tôi hoan nghênh mọi đóng góp! Vui lòng:
-1. Báo cáo bugs qua Issues
-2. Đề xuất tính năng mới
-3. Gửi Pull Requests
-4. Cải thiện documentation
-
-## Liên Hệ
-
-- GitHub Issues: Báo cáo bugs và đề xuất tính năng
-- Email: [Thêm email của bạn]
-
----
-
 ## Tài Liệu Kèm Theo
 
 - [`QUICK_START.md`](QUICK_START.md) - Hướng dẫn khởi động nhanh
