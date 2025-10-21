@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Mật Khẩu</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Trang đăng nhập/đăng ký -->
+        <div id="auth-section" class="auth-section">
+            <div class="auth-container">
+                <h1>Quản Lý Mật Khẩu</h1>
+
+                <!-- Form đăng nhập -->
+                <div id="login-form" class="auth-form active">
+                    <h2>Đăng Nhập</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="login-username">Tên đăng nhập:</label>
+                            <input type="text" id="login-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Mật khẩu:</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Đăng Nhập</button>
+                    </form>
+                    <p class="auth-switch">
+                        Chưa có tài khoản? <a href="#" onclick="switchToRegister()">Đăng ký ngay</a>
+                    </p>
+                </div>
+
+                <!-- Form đăng ký -->
+                <div id="register-form" class="auth-form">
+                    <h2>Đăng Ký</h2>
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="register-username">Tên đăng nhập:</label>
+                            <input type="text" id="register-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Mật khẩu:</label>
+                            <input type="password" id="register-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Xác nhận mật khẩu:</label>
+                            <input type="password" id="confirm-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Đăng Ký</button>
+                    </form>
+                    <p class="auth-switch">
+                        Đã có tài khoản? <a href="#" onclick="switchToLogin()">Đăng nhập</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Giao diện chính quản lý mật khẩu -->
+        <div id="main-section" class="main-section hidden">
+            <header class="header">
+                <h1>Quản Lý Mật Khẩu</h1>
+                <div class="user-info">
+                    <span id="username-display"></span>
+                    <button onclick="logout()" class="btn btn-secondary">Đăng Xuất</button>
+                </div>
+            </header>
+
+            <div class="content">
+                <!-- Form thêm mật khẩu mới -->
+                <div class="password-form-section">
+                    <h2>Thêm Mật Khẩu Mới</h2>
+                    <form id="passwordForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="website">Website:</label>
+                                <input type="text" id="website" placeholder="vd: google.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="username-field">Tên đăng nhập:</label>
+                                <input type="text" id="username-field" placeholder="Tên đăng nhập trên website"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="password">Mật khẩu:</label>
+                                <div class="password-field">
+                                    <input type="password" id="password" placeholder="Nhập mật khẩu của bạn" required
+                                        style="width: 100%;">
+                                    <button type="button" onclick="togglePasswordVisibility('password')"
+                                        class="btn-icon">👁️</button>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="master-password">Master Password:</label>
+                                <div class="password-field">
+                                    <input type="password" id="master-password" placeholder="Mật khẩu chính để mã hóa"
+                                        required style="width: 100%;">
+                                    <button type="button" onclick="togglePasswordVisibility('master-password')"
+                                        class="btn-icon">👁️</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Thêm Mật Khẩu</button>
+                            <button type="button" onclick="generatePassword()" class="btn btn-secondary">Tạo Master
+                                Password
+                                Ngẫu Nhiên</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Danh sách mật khẩu -->
+                <div class="passwords-section">
+                    <h2>Danh Sách Mật Khẩu</h2>
+                    <div class="search-section">
+                        <input type="text" id="search-input" placeholder="Tìm kiếm theo website..."
+                            onkeyup="filterPasswords()">
+                    </div>
+                    <div id="passwords-list" class="passwords-list">
+                        <!-- Danh sách mật khẩu sẽ được tải ở đây -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal xem chi tiết mật khẩu -->
+        <div id="password-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Chi Tiết Mật Khẩu</h3>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Website:</label>
+                        <input type="text" id="modal-website" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên đăng nhập:</label>
+                        <input type="text" id="modal-username" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu:</label>
+                        <div class="password-field">
+                            <input type="password" id="modal-password" readonly>
+                            <button type="button" onclick="togglePasswordVisibility('modal-password')"
+                                class="btn-icon">👁️</button>
+                            <button type="button" onclick="copyToClipboard('modal-password')"
+                                class="btn-icon">📋</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="modal-master-password" style="display: none;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="editPassword()" class="btn btn-primary">Chỉnh Sửa</button>
+                    <button onclick="deletePassword()" class="btn btn-danger">Xóa</button>
+                    <button onclick="closeModal()" class="btn btn-secondary">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal chỉnh sửa mật khẩu -->
+        <div id="edit-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Chỉnh Sửa Mật Khẩu</h3>
+                    <span class="close" onclick="closeEditModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="editPasswordForm">
+                        <div class="form-group">
+                            <label for="edit-website">Website:</label>
+                            <input type="text" id="edit-website" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-username">Tên đăng nhập:</label>
+                            <input type="text" id="edit-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-password">Mật khẩu mới (để trống nếu không đổi):</label>
+                            <input type="password" id="edit-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-master-password">Master Password:</label>
+                            <input type="password" id="edit-master-password" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="savePasswordEdit()" class="btn btn-primary">Lưu Thay Đổi</button>
+                    <button onclick="closeEditModal()" class="btn btn-secondary">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông báo -->
+    <div id="notification" class="notification hidden">
+        <span id="notification-message"></span>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+
+</html>
